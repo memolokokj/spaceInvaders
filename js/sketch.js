@@ -99,7 +99,7 @@ function move(){
 
 function keyPressed(){
 	if(start && !victory && !lost)
-		if (keyCode === UP_ARROW){
+		if (keyCode === 32){
 			nave.disparo(new Disparo(40, 40, nave.x, nave.y-nave.h, disparoImg, -10));
 			naveLaser.play();
 		}
