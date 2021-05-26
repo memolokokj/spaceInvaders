@@ -5,15 +5,18 @@ let start = false;
 let row = 1;
 let victory = false;
 let lost = false;
+let pause = false;
 
 function preload(){
 	fin = loadImage("assets/img/fin.png");
 	fondo = loadImage("assets/img/fondo.png");
 	naveImg = loadImage("assets/img/nave.png");
 	inicio = loadImage("assets/img/inicio.png");
+	yamete = loadImage("assets/img/yamete.png");
 	alienImg = loadImage("assets/img/enemigo1.png");
 	victoria = loadImage("assets/img/victoria.png");
 	alien2Img = loadImage("assets/img/enemigo2.png");
+	alien3Img = loadImage("assets/img/enemigo3.png");
 	disparoImg = loadImage("assets/img/disparo.png");
 	disparo2Img = loadImage("assets/img/disparo2.png");
 	naveLaser = loadSound('assets/sounds/navelaser.mp3');
@@ -26,7 +29,7 @@ function preload(){
 
 function setup() {
 	createCanvas(windowWidth/1.6, windowHeight);
-	flota = new Flota(0, 80, alienImg, alien2Img);
+	flota = new Flota(0, 80, alienImg, alien2Img, alien3Img);
 	nave = new Nave(40, 40, width/2, height-20, naveImg, flota.flota);
 	flota.crearFlota(nave, row);
 	row++;
@@ -43,29 +46,34 @@ function draw() {
 	if(start){
 		if(!victory && !lost)
 		{
-			if(!fondoSound.isPlaying()){
-			  fondoSound.play();
+			if(pause){
+				if(!fondoSound.isPlaying()){
+				  fondoSound.play();
+				}
+				background(fondo);
+				textSize(40);
+				fill("white");
+				text(nave.vida, 10, 50);
+				for(let i = 0; i < nave.vida; i++)
+					image(naveImg, 50*(i+1), 20, 30, 30);
+				text("SCORE: "+nave.score, width-270, 50);
+				stroke("white");
+				line(0, 70, width, 70);
+				nave.display();
+				flota.display();
+				if(flota.rest() == 0){
+					flota.crearFlota(nave,row);
+					row++;
+					if(row > 4)
+						victory = true;
+				}
+				if(nave.vida <= 0)
+					lost = true;
+				move();
 			}
-			background(fondo);
-			textSize(40);
-			fill("white");
-			text(nave.vida, 10, 50);
-			for(let i = 0; i < nave.vida; i++)
-				image(naveImg, 50*(i+1), 20, 30, 30);
-			text("SCORE: "+nave.score, width-270, 50);
-			stroke("white");
-			line(0, 70, width, 70);
-			nave.display();
-			flota.display();
-			if(flota.rest() == 0){
-				flota.crearFlota(nave,row);
-				row++;
-				if(row > 3)
-					victory = true;
+			else{
+				background(yamete)
 			}
-			if(nave.vida <= 0)
-				lost = true;
-			move();
 		}
 		else{
 			fondoSound.stop();
@@ -98,12 +106,40 @@ function move(){
 }
 
 function keyPressed(){
-	if(start && !victory && !lost)
+	if(start && !victory && !lost && pause)
 		if (keyCode === 32){
 			nave.disparo(new Disparo(40, 40, nave.x, nave.y-nave.h, disparoImg, -10));
 			naveLaser.play();
 		}
 
 	if(keyIsDown(ENTER))
-		start = !start;
+		start = true;
+
+	if(keyIsDown(ENTER) && start){
+		pause = !pause;
+		if(!fondoSound.isPlaying()){
+		  fondoSound.play();
+		}
+		else{
+			fondoSound.stop();
+		}
+	}
+
+	if(keyIsDown(ENTER) && (lost || victory))
+		restart();
+}
+
+function restart(){
+	nave.vida = 3;
+	nave.score = 0;
+	row = 1;
+	flota.restart();
+	flota.crearFlota(nave, row);
+	row++;
+	lost = false;
+	victory = false;
+	start = false;
+	fondoSound.stop();
+	lostSound.stop();
+	victoriaSound.stop();
 }
