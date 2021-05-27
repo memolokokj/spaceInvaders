@@ -8,6 +8,4 @@ Examen para la clase de Graficacion y multimiedia.
 
 #Miembros del equipo:
  -Guillermo Dominguez Gameros.
- -Miguel Antonio Aviles Resendiz.
-
 *******************************************************
