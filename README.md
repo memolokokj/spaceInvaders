@@ -3,9 +3,7 @@
 Examen para la clase de Graficacion y multimiedia.
 
 *******************************************************
-#Profesor:
- -Jesus Zuñiga
+#Profesor: Jesus Zuñiga
 
-#Miembros del equipo:
- -Guillermo Dominguez Gameros.
+#Miembros del equipo: Guillermo Dominguez Gameros.
 *******************************************************
